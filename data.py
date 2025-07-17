@@ -1,4 +1,4 @@
-from .ac_model import MODEL_NAMES2
+from .ac_model import MODEL_NAMES
 
 from torch.utils.data import Dataset
 import torch
@@ -53,10 +53,10 @@ def load_dataset(mode: str = "base"):
 
     mode = mode.lower()
 
-    if mode not in MODEL_NAMES2:
+    if mode not in MODEL_NAMES:
         raise ValueError(f"Incorrect model selection: {mode}")
 
-    tokenizer = AutoTokenizer.from_pretrained(str(MODEL_NAMES2[mode]))
+    tokenizer = AutoTokenizer.from_pretrained(str(MODEL_NAMES[mode]))
 
     max_length = 512
     label2id = {"REB": 0, "REF": 1}
@@ -75,9 +75,9 @@ def test_dataset(idx: int = 100, mode="base"):
     texts = dataset["Data"].str.strip().tolist()
     labels = dataset["Label"].str.strip().tolist()
 
-    if mode.lower() not in MODEL_NAMES2:
+    if mode.lower() not in MODEL_NAMES:
         raise ValueError(f"Incorrect model selection: {mode}")
-    model_name = str(MODEL_NAMES2[mode])
+    model_name = str(MODEL_NAMES[mode])
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     max_length = 512
 

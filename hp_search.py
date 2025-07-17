@@ -1,4 +1,4 @@
-from .ac_model import ArgumentClassModel, MODEL_NAMES, MODEL_NAMES2
+from .ac_model import MODEL_NAMES
 from .finetune import set_all_seeds, load_model, load_accuracy
 from .data import load_dataset
 
@@ -13,11 +13,8 @@ from transformers import TrainingArguments, Trainer, DataCollatorWithPadding
 def hyperparameter_search(mode: str = "base"):
 
     set_all_seeds(555)
-    
-    # output_dir_mode_opt = os.path.join(output_dir, f"Output_Bert_{mode}", "_optuna-runs")
-    # output_dir_mode_opt = Path(__file__).parent / f"Output_Bert_{mode}", "_optuna-runs"
 
-    model_folder_name = Path(MODEL_NAMES2[mode]).name
+    model_folder_name = Path(MODEL_NAMES[mode]).name
     output_dir_mode_opt = Path(__file__).parent / "Models" / model_folder_name / "_HP-Search-Runs"
 
     tokenizer, train_dataset, val_dataset = load_dataset(mode)
@@ -26,14 +23,14 @@ def hyperparameter_search(mode: str = "base"):
     print(f"Model selected: {mode.upper()}.")
 
     def model_init(trial=None):
+            if mode not in MODEL_NAMES:
+                raise ValueError(f"Incorrect model selection: {mode}")
+
             if trial is not None:
                 drop_prob = trial.suggest_float("dropout", 0.0, 0.2)
             else:
                 drop_prob = 0.1 
-
-            if mode not in ["base", "legal", "large"]:
-                raise ValueError(f"Incorrect model selection: {mode}")
-            
+           
             model = load_model(mode=mode, drop_prob=drop_prob)
             
             return model
@@ -51,8 +48,6 @@ def hyperparameter_search(mode: str = "base"):
     def save_best_hyperparameters(best_trial, output_dir_mode_hp, mode):
         filename = f"best_hyperparameters_{mode}.json"
 
-        # model_folder_name = Path(MODEL_NAMES2[mode]).name
-        # output_dir_model = Path(__file__).parent / "Models" / model_folder_name / "hp_search_outcome"
         filepath = os.path.join(output_dir_mode_hp, filename)
         with open(filepath, 'w') as f:
             json.dump(best_trial.hyperparameters, f, indent=4)

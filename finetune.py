@@ -1,5 +1,5 @@
 
-from .ac_model import ArgumentClassModel, MODEL_NAMES, MODEL_NAMES2
+from .ac_model import ArgumentClassModel, MODEL_NAMES
 from .data import load_dataset
 
 import os
@@ -67,7 +67,7 @@ def train_model(mode: str = "base", hp = False):
     set_all_seeds(555)
     mode = mode.lower()
 
-    model_folder_name = Path(MODEL_NAMES2[mode]).name
+    model_folder_name = Path(MODEL_NAMES[mode]).name
     output_dir_model = Path(__file__).parent / "Models" / model_folder_name
     output_dir_model.mkdir(parents=True, exist_ok=True)    
 

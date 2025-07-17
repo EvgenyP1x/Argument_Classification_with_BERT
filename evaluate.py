@@ -1,4 +1,4 @@
-from .ac_model import ArgumentClassModel, MODEL_NAMES2
+from .ac_model import MODEL_NAMES
 from .data import load_dataset
 from .finetune import load_accuracy
 
@@ -12,8 +12,10 @@ from fire import Fire
 
 # CHECK SAVED MODEL ACCURACY
 def check_model_accuracy (mode):
+    if mode not in MODEL_NAMES:
+        raise ValueError(f"Incorrect model selection: {mode}")
 
-    model_folder_name = Path(MODEL_NAMES2[mode]).name
+    model_folder_name = Path(MODEL_NAMES[mode]).name
     model_dir = Path(__file__).parent / "Models" / model_folder_name
 
     model = AutoModelForSequenceClassification.from_pretrained(model_dir)
@@ -38,8 +40,10 @@ def check_model_accuracy (mode):
 
 # EVALUATE
 def test_model(mode="base"):
+    if mode not in MODEL_NAMES:
+        raise ValueError(f"Incorrect model selection: {mode}")
 
-    model_folder_name = Path(MODEL_NAMES2[mode]).name
+    model_folder_name = Path(MODEL_NAMES[mode]).name
     model_dir = Path(__file__).parent / "Models" / model_folder_name
 
     model = AutoModelForSequenceClassification.from_pretrained(model_dir)

@@ -3,16 +3,10 @@ from transformers import AutoModelForSequenceClassification, AutoConfig
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from transformers import BitsAndBytesConfig
 
-MODEL_NAMES2 = {
+MODEL_NAMES = {
     "base": "bert-base-cased",
     "legal": "nlpaueb/legal-bert-base-uncased",
     "large": "bert-large-cased",
-    }
-
-MODEL_NAMES = {
-    "base": r"C:\Users\epimenov\OneDrive - Government of Saskatchewan\Documents\_Personal\Bert Models\bert-base-cased",
-    "legal": r"C:\Users\epimenov\OneDrive - Government of Saskatchewan\Documents\_Personal\Bert Models\legal-bert-base-cased",
-    "large": r"C:\Users\epimenov\OneDrive - Government of Saskatchewan\Documents\_Personal\Bert Models\bert-large-cased",
     }
 
 
