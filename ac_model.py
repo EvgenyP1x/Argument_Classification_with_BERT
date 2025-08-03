@@ -9,9 +9,9 @@ from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from transformers import BitsAndBytesConfig
 
 MODEL_NAMES = {
-    "base": r"C:\Users\epimenov\OneDrive - Government of Saskatchewan\Documents\_Personal\Bert Models\bert-base-cased", # "bert-base-cased"
-    "legal": r"C:\Users\epimenov\OneDrive - Government of Saskatchewan\Documents\_Personal\Bert Models\legal-bert-base-uncased", # "nlpaueb/legal-bert-base-uncased"
-    "large": r"C:\Users\epimenov\OneDrive - Government of Saskatchewan\Documents\_Personal\Bert Models\bert-large-cased" # "bert-large-cased"
+    "base":  "bert-base-cased",
+    "legal": "nlpaueb/legal-bert-base-uncased",
+    "large": "bert-large-cased"
     }
 
 
