@@ -1,3 +1,8 @@
+""" (c) Evgeny Pimenov, 2025 """
+
+""" Argument Classification: Hyperparameter search"""
+
+
 from .ac_model import MODEL_NAMES
 from .finetune import set_all_seeds, load_model, load_accuracy
 from .data import load_dataset
@@ -9,9 +14,12 @@ from fire import Fire
 from transformers import TrainingArguments, Trainer, DataCollatorWithPadding
 
 
-# HYPERPARAMETERS SEARCH
 def hyperparameter_search(mode: str = "base"):
-
+    """
+    Runs hyperparameter search for the specified model
+    Args:
+        mode (str): model name
+    """
     set_all_seeds(555)
 
     model_folder_name = Path(MODEL_NAMES[mode]).name
@@ -23,6 +31,13 @@ def hyperparameter_search(mode: str = "base"):
     print(f"Model selected: {mode.upper()}.")
 
     def model_init(trial=None):
+            """
+            Initializes the model for a trial, sets dropout 
+            Args:
+                trial: hp search trial
+            Returns:
+                model
+            """
             if mode not in MODEL_NAMES:
                 raise ValueError(f"Incorrect model selection: {mode}")
 
@@ -37,15 +52,21 @@ def hyperparameter_search(mode: str = "base"):
 
     
     def hp_space(trial):
+        """
+        Defines the hyperparameter search space
+        """
         return {
             "learning_rate": trial.suggest_float("learning_rate", 1e-7, 1e-4),
             "per_device_train_batch_size": trial.suggest_categorical("per_device_train_batch_size", [8, 16]),
-            "num_train_epochs": trial.suggest_int("num_train_epochs", low=3, high=5, step=1),
+            "num_train_epochs": trial.suggest_int("num_train_epochs", low=3, high=4, step=1),
             "weight_decay": trial.suggest_float("weight_decay", 0.0, 0.2),
             "gradient_accumulation_steps": trial.suggest_categorical("gradient_accumulation_steps", [1, 2]),
         }
 
     def save_best_hyperparameters(best_trial, output_dir_mode_hp, mode):
+        """
+        Saves the best hyperparameters to a JSON file
+        """
         filename = f"best_hyperparameters_{mode}.json"
 
         filepath = os.path.join(output_dir_mode_hp, filename)
@@ -82,7 +103,7 @@ def hyperparameter_search(mode: str = "base"):
 
     best_trial = trainer.hyperparameter_search(
         direction="maximize",
-        backend="optuna",
+        backend="optuna", # Using Optuna
         hp_space=hp_space,
         n_trials=100,
     )

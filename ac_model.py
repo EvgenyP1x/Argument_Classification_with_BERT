@@ -1,20 +1,32 @@
+""" (c) Evgeny Pimenov, 2025 """
+
+""" Argument Classification: AC Model class"""
+
+
 import torch
 from transformers import AutoModelForSequenceClassification, AutoConfig
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from transformers import BitsAndBytesConfig
 
 MODEL_NAMES = {
-    "base": "bert-base-cased",
-    "legal": "nlpaueb/legal-bert-base-uncased",
-    "large": "bert-large-cased",
+    "base": r"C:\Users\epimenov\OneDrive - Government of Saskatchewan\Documents\_Personal\Bert Models\bert-base-cased", # "bert-base-cased"
+    "legal": r"C:\Users\epimenov\OneDrive - Government of Saskatchewan\Documents\_Personal\Bert Models\legal-bert-base-uncased", # "nlpaueb/legal-bert-base-uncased"
+    "large": r"C:\Users\epimenov\OneDrive - Government of Saskatchewan\Documents\_Personal\Bert Models\bert-large-cased" # "bert-large-cased"
     }
 
 
 class ArgumentClassModel:
-
+    """
+    Wrapper class for model initialization
+    """
     def __init__(self, mode="base", num_labels=2, drop_prob=0.1):
-
-        # self.device = device
+        """
+        Initializes and loads the appropriate model
+        Args:
+            mode (str): model name
+            num_labels (int): number of classes
+            drop_prob (float): dropout probability for the classifier layer
+        """
         self.mode = mode.lower()
         self.num_labels = num_labels
         self.drop_prob = drop_prob

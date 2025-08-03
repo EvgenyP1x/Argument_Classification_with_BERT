@@ -1,3 +1,8 @@
+""" (c) Evgeny Pimenov, 2025 """
+
+""" Argument Classification: Model evaluation and testing"""
+
+
 from .ac_model import MODEL_NAMES
 from .data import load_dataset
 from .finetune import load_accuracy
@@ -9,17 +14,25 @@ import tkinter as tk
 from tkinter import messagebox
 from fire import Fire
 
+from peft import PeftModel
 
-# CHECK SAVED MODEL ACCURACY
-def check_model_accuracy (mode):
+def check_model_accuracy (mode="base"):
+    """
+    Loads a trained model and calculates its accuracy on the validation dataset
+    Args:
+        mode (str): model name
+    Returns:
+        str: validation accuracy
+    """
     if mode not in MODEL_NAMES:
         raise ValueError(f"Incorrect model selection: {mode}")
 
     model_folder_name = Path(MODEL_NAMES[mode]).name
-    model_dir = Path(__file__).parent / "Models" / model_folder_name
+    tokenizer_dir = Path(__file__).parent / "Models" / model_folder_name
+    model_dir = Path(__file__).parent / "Models" / model_folder_name / "best_model"
 
     model = AutoModelForSequenceClassification.from_pretrained(model_dir)
-    tokenizer_saved = AutoTokenizer.from_pretrained(model_dir)
+    tokenizer_saved = AutoTokenizer.from_pretrained(tokenizer_dir)
 
     _, _, val_dataset = load_dataset(mode)
     data_collator = DataCollatorWithPadding(tokenizer=tokenizer_saved)
@@ -35,19 +48,28 @@ def check_model_accuracy (mode):
 
     metrics = trainer.evaluate(eval_dataset=val_dataset)
     acc = metrics["eval_accuracy"]
-    res = f"{mode.upper()} model accuracy: {acc}"
+    loss = metrics["eval_loss"]
+
+    res = f"{mode.upper()} model —->   Accuracy: {acc:.4f}, Validation Loss: {loss:.4f}"
+
     return res
 
-# EVALUATE
+
 def test_model(mode="base"):
+    """
+    Launches a Tkinter GUI for interactive text classification
+    Args:
+        mode (str): model name
+    """
     if mode not in MODEL_NAMES:
         raise ValueError(f"Incorrect model selection: {mode}")
 
     model_folder_name = Path(MODEL_NAMES[mode]).name
-    model_dir = Path(__file__).parent / "Models" / model_folder_name
+    tokenizer_dir = Path(__file__).parent / "Models" / model_folder_name
+    model_dir = Path(__file__).parent / "Models" / model_folder_name / "best_model"
 
     model = AutoModelForSequenceClassification.from_pretrained(model_dir)
-    tokenizer = AutoTokenizer.from_pretrained(model_dir)
+    tokenizer = AutoTokenizer.from_pretrained(tokenizer_dir)
     if mode == "large":
         model.config.id2label = {0: "REB", 1: "REF"}
         model.config.label2id = {"REB": 0, "REF": 1}
@@ -68,6 +90,9 @@ def test_model(mode="base"):
     tk.Label(root, textvariable=result_var, fg="blue").pack(pady=5)
 
     def classify_text():
+        """
+        Retrieves user input, tokenizes it, runs inference, displays the predicted label
+        """
         text = entry.get("1.0", tk.END).strip()
         if not text:
             messagebox.showwarning("Input Required", "Please enter some text.")
@@ -79,12 +104,15 @@ def test_model(mode="base"):
         predicted_class_id = logits.argmax().item()
         label = model.config.id2label[predicted_class_id]
         result_var.set(f"Predicted label: {label}")
-        
+
+    # Classification button  
     tk.Button(root, text="Classify as REB or REF", command=classify_text).pack(pady=5)
 
+    # Output label
     result_var = tk.StringVar()
     tk.Label(root, textvariable=result_var, fg="blue").pack(pady=5)
 
+    # Event loop
     root.mainloop()
 
 

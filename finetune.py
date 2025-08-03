@@ -1,3 +1,7 @@
+""" (c) Evgeny Pimenov, 2025 """
+
+""" Argument Classification: BERT finetuning script"""
+
 
 from .ac_model import ArgumentClassModel, MODEL_NAMES
 from .data import load_dataset
@@ -5,7 +9,7 @@ from .data import load_dataset
 import os
 import warnings
 from transformers import TrainingArguments, Trainer, DataCollatorWithPadding
-from transformers import EarlyStoppingCallback
+from transformers import EarlyStoppingCallback, TrainerCallback
 from transformers import set_seed, enable_full_determinism
 from fire import Fire
 from pathlib import Path
@@ -19,8 +23,12 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 warnings.filterwarnings("ignore", category=DeprecationWarning, module="tensorflow")
 
 
-# SET SEED 
 def set_all_seeds(seed: int = 555):
+    """
+    Sets the random seed to ensure reproducibility.
+    Args:
+        :seed (int): The seed value to use for random number generators
+    """
 
     random.seed(seed)
     np.random.seed(seed)
@@ -33,11 +41,23 @@ def set_all_seeds(seed: int = 555):
     set_seed(seed)
 
 
-# INITIATE ACCURACY
 def load_accuracy():
-
+    """
+    Loads the accuracy evaluation metric
+    Returns:
+        function: a function that accuracy.
+    """
+    
     accuracy = evaluate.load("accuracy")
     def compute_metrics(eval_pred):
+        """
+        Computes accuracy from predictions and labels
+        Args:
+            eval_pred (tuple): Tuple containing predictions and labels
+        Returns:
+            dict: accuracy score
+        """
+
         predictions, labels = eval_pred
         predictions = np.argmax(predictions, axis=1)
         return accuracy.compute(predictions=predictions, references=labels)
@@ -45,15 +65,29 @@ def load_accuracy():
     return compute_metrics
 
 
-# LOAD MODEL
 def load_model(mode = "base", num_labels: int = 2, drop_prob = 0.1):
-    
+    """
+    Loads a pretrained model for classification
+    Args:
+        mode (str): model name
+        num_labels (int): number of output classes
+        drop_prob (float): dropout probability for the classifier layer
+    Returns:
+        torch.nn.Module: loaded model instance
+    """
+
     ac_model = ArgumentClassModel(mode, num_labels, drop_prob)
     return ac_model.model
 
 
-# LOAD HYPERPARAMETERS
 def load_model_config(mode: str):
+    """
+    Loads hyperparameters from .JSON file
+    Args:
+        mode (str): model name
+    Returns:
+        dict: hyperparameters configuration dictionary
+    """
 
     config_path = Path(__file__).parent / "Models" / "hyperparameters_current.json"
     with open(config_path, "r") as f:
@@ -63,6 +97,17 @@ def load_model_config(mode: str):
 
 # TRAIN
 def train_model(mode: str = "base", hp = False):
+    """
+    Fine-tunes a selected model for argument classification.
+    Args:
+        mode (str): model name, must exist in MODEL_NAMES.
+        hp (bool): to load hyperparameters from JSON or use defaults.
+    Workflow:
+        - load tokenizer, datasets and hyperparameters
+        - initialize model
+        - define training/evaluation parameters and callbacks.
+        - train with HuggingFace Trainer, save the best model and logs
+    """
 
     set_all_seeds(555)
     mode = mode.lower()
@@ -89,7 +134,7 @@ def train_model(mode: str = "base", hp = False):
             dropout = hp_cfg["dropout"]
         except KeyError as e:
             print(f"[ERROR] Mode '{mode}' not found in the config json.")
-            raise SystemExit(1)  # stop execution cleanly
+            raise SystemExit(1)
     else:
         print("Define hyperparameters manually in the function or use the default values as per below.")
         lr = 1e-05
@@ -109,12 +154,15 @@ def train_model(mode: str = "base", hp = False):
     print(f"Dropout:                      {dropout}")
 
     def model_init():
-        drop_prob = dropout
-
+        """
+        Initializes the model, sets dropout, checks tokenizer compatibility
+        Returns:
+            model
+        """
         if mode not in MODEL_NAMES:
             raise ValueError(f"Incorrect model selection: {mode}")
         
-        model = load_model(mode=mode, drop_prob=drop_prob)
+        model = load_model(mode=mode, drop_prob=dropout)
 
         # Checks model/tokenizer compatibility  
         if tokenizer.vocab_size != model.config.vocab_size:
@@ -138,15 +186,17 @@ def train_model(mode: str = "base", hp = False):
         weight_decay=weight_decay,
         eval_strategy="epoch",
         save_strategy="epoch",
+        logging_strategy="steps",
+        logging_steps=15,
+        save_total_limit=2,
         load_best_model_at_end=True,
-        save_total_limit=1,
         push_to_hub=False,
         metric_for_best_model="accuracy", 
         dataloader_num_workers=1,
         fp16=(mode == "large"), # Enable mixed precision training
-        remove_unused_columns=(mode != "large"), # LoRA par 
-        gradient_checkpointing=(mode == "large"), # LoRA par
-        gradient_checkpointing_kwargs={'use_reentrant':(mode == "large")}, # LoRA par
+        remove_unused_columns=(mode != "large"), # LoRA parameter
+        gradient_checkpointing=(mode == "large"), # LoRA parameter
+        gradient_checkpointing_kwargs={'use_reentrant':(mode == "large")}, # LoRA parameter
         label_names=['labels']
     )
 
@@ -157,12 +207,18 @@ def train_model(mode: str = "base", hp = False):
         eval_dataset=val_dataset,
         data_collator=data_collator,
         compute_metrics=compute_metrics,
-        callbacks=[EarlyStoppingCallback(early_stopping_patience = 4)]
+        callbacks=[EarlyStoppingCallback(early_stopping_patience = 3)]
     )
 
     trainer.train()
-    trainer.save_model(output_dir_model)
+    trainer.save_model(output_dir_model / "best_model")
     tokenizer.save_pretrained(output_dir_model)
+
+    logs_dir = Path(__file__).parent / "Models/plot_logs"
+    logs_dir.mkdir(parents=True, exist_ok=True)
+    log_file = logs_dir / f"{mode}_training_log.json"
+    with open(log_file, "w") as f:
+        json.dump(trainer.state.log_history, f, indent=2)
 
 
 if __name__ == "__main__":

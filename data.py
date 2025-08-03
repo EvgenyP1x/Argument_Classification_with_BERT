@@ -1,3 +1,8 @@
+""" (c) Evgeny Pimenov, 2025 """
+
+""" Argument Classification: Data loading"""
+
+
 from .ac_model import MODEL_NAMES
 
 from torch.utils.data import Dataset
@@ -11,6 +16,15 @@ from sklearn.model_selection import train_test_split
 
 
 class TextClassificationDataset(Dataset):
+    """
+    Custom Dataset for text classification. Encodes text samples and maps labels to IDs
+    Args:
+        texts (list): list of raw inputs
+        labels (list): list of labels corresponding to texts
+        tokenizer (AutoTokenizer): HuggingFace tokenizer
+        max_length (int): maximum sequence length
+        label2id (dict): mapping from labels to integer IDs
+    """
 
     def __init__(self, texts, labels, tokenizer, max_length, label2id):
         self.texts = texts
@@ -21,9 +35,15 @@ class TextClassificationDataset(Dataset):
         self.label2id = label2id
     
     def __len__(self):
+        """Returns the total number of samples"""
         return len(self.texts)
     
     def __getitem__(self, idx):
+        """
+        Retrieves a sample (tokenized input and label) at index idx
+        Returns:
+            dict: input_ids, attention_mask and label tensor
+        """
         input_ids = self.encodings["input_ids"][idx]
         attention_mask = self.encodings["attention_mask"][idx]
         label_id = self.label2id[self.labels[idx]]
@@ -36,7 +56,13 @@ class TextClassificationDataset(Dataset):
 
 
 def load_dataset(mode: str = "base"):
-
+    """
+    Loads dataset from Excel, tokenizes text, creates train & validation sets
+    Args:
+        mode (str): model name
+    Returns:
+        tuple: (tokenizer, train_dataset, val_dataset)   
+    """
     dataset_dir = Path(__file__).parent / "Dataset"
     filepath = dataset_dir / 'reb_ref_dataset.xlsx'
     if not filepath.exists():
@@ -68,7 +94,14 @@ def load_dataset(mode: str = "base"):
 
 
 def test_dataset(idx: int = 100, mode="base"):
-    
+    """
+    Inspects Dataset and label distribution
+    Args:
+        idx (int): index of the sample
+        mode (str): model name
+    Prints:
+        label distribution, tokenized encoding, decoded text
+    """
     dataset_dir = Path(__file__).parent / "Dataset"
     filepath = dataset_dir / 'reb_ref_dataset.xlsx'
     dataset = pd.read_excel(filepath)
