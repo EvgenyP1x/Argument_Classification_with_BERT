@@ -1,6 +1,6 @@
-### Project Information \n
+# Project Information \n
 ## Background and Justification
 ## Model
 ## Analysys
-## Findings
-# Conclusion
+### Findings
+### Conclusion
