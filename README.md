@@ -1,4 +1,4 @@
-# Project Information \n
+# Project Information
 ## Background and Justification
 ## Model
 ## Analysys
