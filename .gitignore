@@ -1,2 +1,6 @@
 __pycache__/
-Models/
+Models/bert-base-cased
+Models/bert-large-cased
+Models/legal-bert-base-uncased
+Models/plot_logs
+
