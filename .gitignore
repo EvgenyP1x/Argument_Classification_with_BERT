@@ -1,6 +1,12 @@
 __pycache__/
-Models/bert-base-cased
-Models/bert-large-cased
-Models/legal-bert-base-uncased
+Models/bert-base-cased/checkpoint-118
+Models/bert-base-cased/checkpoint-177
+Models/bert-base-cased/runs
+Models/legal-bert-base-uncased/checkpoint-118
+Models/legal-bert-base-uncased/checkpoint-177
+Models/legal-bert-base-uncased/runs
+Models/bert-large-cased/checkpoint-236
+Models/bert-large-cased/checkpoint-295
+Models/bert-large-cased//runs
 Models/plot_logs
 
