@@ -7,7 +7,7 @@ Models/legal-bert-base-uncased/best_model/model.safetensors
 Models/legal-bert-base-uncased/checkpoint-118
 Models/legal-bert-base-uncased/checkpoint-177
 Models/legal-bert-base-uncased/runs
-Models/bert-large-cased/checkpointbest_model/adapter_model.safetensors
+Models/bert-large-cased/best_model/adapter_model.safetensors
 Models/bert-large-cased/checkpoint-236
 Models/bert-large-cased/checkpoint-295
 Models/bert-large-cased//runs
