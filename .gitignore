@@ -11,6 +11,7 @@ Models/bert-large-cased/runs
 Models/bert-large-cased/best_model/adapter_model.safetensors
 Models/bert-large-cased/checkpoint-236
 Models/bert-large-cased/checkpoint-295
+Models/bert-large-cased/runs
 Models/plot_logs
 *.safetensors
 
