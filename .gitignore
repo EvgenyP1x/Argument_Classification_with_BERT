@@ -1,5 +1,4 @@
 __pycache__/
-Models/bert-base-cased/best_model/model.safetensors
 Models/bert-base-cased/checkpoint-118
 Models/bert-base-cased/checkpoint-177
 Models/bert-base-cased/runs
