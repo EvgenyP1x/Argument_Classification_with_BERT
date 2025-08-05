@@ -10,5 +10,3 @@ Models/bert-large-cased/checkpoint-236
 Models/bert-large-cased/checkpoint-295
 Models/bert-large-cased/runs
 Models/plot_logs
-*.safetensors
-
