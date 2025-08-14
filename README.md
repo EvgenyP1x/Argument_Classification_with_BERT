@@ -1,4 +1,4 @@
-### BERT Finetuning for Argument Classification in a Government Context
+# BERT Finetuning for Argument Classification in a Government Context
 
 ## Project Overview
 
