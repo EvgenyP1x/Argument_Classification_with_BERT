@@ -21,13 +21,12 @@ Libraries:
 
 ## Usage
 
-To Clone repo:
+The keyword **`base`** in the commands below can be replaced with **`legal`** or **`large`** to train the Legal or Large model, respectively.
 
+To Clone repo:
 ```bash
 git clone https://github.com/EvgenyP1x/Argument_Classification_with_BERT
 ```
-
-The keyword **`base`** in the commands below can be replaced with **`legal`** or **`large`** to train the Legal or Large model, respectively.
 
 To display information about the dataset:
 ```bash
