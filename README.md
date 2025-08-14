@@ -78,7 +78,7 @@ Three transformer models with varying sizes and architectures were finetuned: BE
 
 ## Training Process
 
-Hyperparameter tuning was performed using the Optuna framework, exploring learning rates, batch sizes, dropout, weight decay, gradient accumulation and number of training epochs. The best-performing hyperparameters were saved to Models/hyperparameters_current.json and could be loaded for finetuning.
+Hyperparameter tuning was performed using the Optuna framework, exploring learning rates, batch sizes, dropout, weight decay, gradient accumulation and number of training epochs. The best-performing hyperparameters were saved to **`Models/hyperparameters_current.json`** and could be loaded for finetuning.
 
 The BERT Large model was finetuned using Low-Rank Adaptation and mixed precision to handle memory constraints. Given the small dataset (~1,000 examples), Base and Legal Base models reached optimal performance within 2–3 epochs, while the Large model required 1-2 additional epochs. Dropout, early stopping and weight decay were applied to prevent overfitting, and validation metrics were monitored to ensure generalization.
 
@@ -88,7 +88,7 @@ To establish a baseline, a Bag-of-Words approach was applied using combinations 
 
 All three fine-tuned BERT models outperformed the Bag-of-Words baseline, achieving classification accuracies in the range of 91–92%, compared to 85.17% for the benchmark. Among the BERT models, Base cased (91.95%) slightly outperformed Large cased (91.53%) and Legal Base uncased (91.53%), though differences were minimal and likely due to randomness in hyperparameter search.
 
-The trained models were saved to the Models directory and can be used for inference via a tkinter-based GUI.
+The trained models were saved to the **`Models`** directory and can be used for inference via a tkinter-based GUI.
 
 ## Future Work
 
