@@ -63,7 +63,7 @@ To evaluate the accuracy and loss of the trained Base model:
 python -m Argument_Classification_with_BERT.evaluate check base 
 ```
 
-To run the model for inference on new examples through the GUI:
+To run the trained Base model for inference on new examples through the GUI:
 ```bash
 python -m Argument_Classification_with_BERT.evaluate evaluate base
 ```
