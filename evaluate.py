@@ -1,4 +1,4 @@
-""" (c) Evgeny Pimenov, 2025 """
+""" 2025 """
 
 """ Argument Classification: Model evaluation and testing"""
 
