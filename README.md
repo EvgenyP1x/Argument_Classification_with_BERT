@@ -58,7 +58,7 @@ To perform a hyperparameter search for the Base model:
 python -m Argument_Classification_with_BERT.hp_search hp_search base
 ```
 
-To evaluate the accuracy and loss of a trained Base model:
+To evaluate the accuracy and loss of the trained Base model:
 ```bash
 python -m Argument_Classification_with_BERT.evaluate check base 
 ```
