@@ -53,7 +53,7 @@ To train the Base model with the default hyperparameters:
 python -m Argument_Classification_with_BERT.finetune train base
 ```
 
-To evaluate the accuracy and loss of a trained Base model:
+To evaluate the accuracy and loss of the trained Base model:
 ```bash
 python -m Argument_Classification_with_BERT.evaluate check base
 ```
