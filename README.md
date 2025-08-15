@@ -21,14 +21,12 @@ Libraries:
 
 ## Usage
 
-The keyword **`base`** in the commands below can be replaced with **`legal`** or **`large`** to train the Legal or Large model, respectively.
+The keyword **`base`** in the commands below is used to train or evaluate the Base model. It can be replaced with **`legal`** or **`large`** to train or evaluate the Legal or Large model, respectively.
 
 To Clone repo:
 ```bash
 git clone https://github.com/EvgenyP1x/Argument_Classification_with_BERT
 ```
-
-The keyword **`base`** in the commands below is used to train or evaluate the Base model. It can be replaced with **`legal`** or **`large`** to train or evaluate the Legal or Large model, respectively.
 
 To display information about the dataset:
 ```bash
