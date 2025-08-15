@@ -48,11 +48,6 @@ To train the Base model with the best hyperparameters:
 python -m Argument_Classification_with_BERT.finetune train base -hp
 ```
 
-To train the Base model with the default hyperparameters:
-```bash
-python -m Argument_Classification_with_BERT.finetune train base
-```
-
 To evaluate the accuracy and loss of a trained Base model:
 ```bash
 python -m Argument_Classification_with_BERT.evaluate check base
