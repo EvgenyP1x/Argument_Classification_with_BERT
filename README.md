@@ -27,7 +27,7 @@ To Clone repo:
 git clone https://github.com/EvgenyP1x/Argument_Classification_with_BERT
 ```
 
-The keyword **`base`** in the commands below can be replaced with **`legal`** or **`large`** to train the Legal or Large model, respectively.
+The keyword **`base`** in the commands below is used to train or evaluate the Base model. It can be replaced with **`legal`** or **`large`** to train or evaluate the Legal or Large model, respectively.
 
 To display information about the dataset:
 ```bash
@@ -54,14 +54,9 @@ To train the Base model with the default hyperparameters:
 python -m Argument_Classification_with_BERT.finetune train base
 ```
 
-To perform a hyperparameter search for the Base model:
-```bash
-python -m Argument_Classification_with_BERT.hp_search hp_search base
-```
-
 To evaluate the accuracy and loss of a trained Base model:
 ```bash
-python -m Argument_Classification_with_BERT.evaluate check base 
+python -m Argument_Classification_with_BERT.evaluate check base
 ```
 
 To run the model for inference on new examples through the GUI:
